@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'users',
     'service',
+    "debug_toolbar",
     'api',
 
     

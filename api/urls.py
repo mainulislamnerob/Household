@@ -9,6 +9,7 @@ router.register(r'reviews', ReviewViewSet, basename='review')
 
 urlpatterns = [
     path('',include(router.urls)),
+    
     path('api/cart/', svc_views.CartView.as_view()),
     path('api/cart/add/', svc_views.AddToCartAPIView.as_view()),
     path('api/cart/remove/', svc_views.RemoveFromCartAPIView.as_view()),
