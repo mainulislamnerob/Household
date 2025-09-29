@@ -15,7 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-eary&prn2n&6fqg4i$e$x@v$93^#0d&sa#xjrv&n%(#asrc7g&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [".vercel.app", '127.0.0.1']
 AUTH_USER_MODEL = 'users.User'
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     'api',
     'shop',
+    "corsheaders",
 
     
 
@@ -54,6 +55,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = 'household_servide.urls'
@@ -171,6 +174,7 @@ DJOSER = {
         'user_create': 'users.serializers.UserCreateSerializer'
     },
 
+
 }
 
 SWAGGER_SETTINGS = {
@@ -183,3 +187,7 @@ SWAGGER_SETTINGS = {
         }
     }
 }
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+]

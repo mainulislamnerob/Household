@@ -1,5 +1,6 @@
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer, UserSerializer as BaseUserSerializer
-
+from rest_framework import serializers
+from .models import  Team, ContactMessage
 
 class UserCreateSerializer(BaseUserCreateSerializer):
     class Meta(BaseUserCreateSerializer.Meta):
@@ -13,19 +14,15 @@ class UserSerializer(BaseUserSerializer):
         fields = ['id', 'email', 'first_name',
                   'last_name', 'address', 'phone_number']
         
-class ProfileSerializer(BaseUserSerializer):
-    class Meta(BaseUserSerializer.Meta):
-        ref_name = 'Profile'
-        fields = ['id', 'email', 'first_name',
-                  'last_name', 'address', 'phone_number']
+
         
-class TeamSerializer(BaseUserSerializer):
-    class Meta(BaseUserSerializer.Meta):
-        ref_name = 'Team'
+class TeamSerializer(serializers.ModelSerializer):
+    class Meta():
+        model = Team
         fields = ['id', 'name', 'members', 'created_at', 'updated_at']
 
-class ContactMessageSerializer(BaseUserSerializer):
-    class Meta(BaseUserSerializer.Meta):
-        ref_name = 'ContactMessage'
+class ContactMessageSerializer(serializers.ModelSerializer):
+    class Meta():
+        model = ContactMessage
         fields = ['id', 'name', 'email', 'subject', 'message', 'created_at']
 
