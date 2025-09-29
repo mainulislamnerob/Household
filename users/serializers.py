@@ -18,3 +18,14 @@ class ProfileSerializer(BaseUserSerializer):
         ref_name = 'Profile'
         fields = ['id', 'email', 'first_name',
                   'last_name', 'address', 'phone_number']
+        
+class TeamSerializer(BaseUserSerializer):
+    class Meta(BaseUserSerializer.Meta):
+        ref_name = 'Team'
+        fields = ['id', 'name', 'members', 'created_at', 'updated_at']
+
+class ContactMessageSerializer(BaseUserSerializer):
+    class Meta(BaseUserSerializer.Meta):
+        ref_name = 'ContactMessage'
+        fields = ['id', 'name', 'email', 'subject', 'message', 'created_at']
+

@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'service',
     "debug_toolbar",
     'api',
+    'shop',
 
     
 
