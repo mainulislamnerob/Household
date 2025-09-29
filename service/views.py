@@ -6,17 +6,11 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .models import Service, Cart, CartItem, Order, OrderItem, Review
 from .serializers import ServiceSerializer, CartSerializer, CartItemSerializer, OrderSerializer, ReviewSerializer
-from .permissions import IsAdminUserCustom 
-from rest_framework import permissions
 from rest_framework import filters
-from service.permissions import IsOwnerOrReadOnly
 class ServiceViewSet(viewsets.ModelViewSet):
     queryset = Service.objects.all().order_by('-id')
     serializer_class = ServiceSerializer
-    permission_classes = IsOwnerOrReadOnly
-
     # allow sorting by rating: ?ordering=-average_rating
-
     filter_backends = [filters.OrderingFilter, filters.SearchFilter]
     ordering_fields = ['average_rating','price','created_at']
     search_fields = ['title','description']
