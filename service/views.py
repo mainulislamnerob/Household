@@ -8,18 +8,15 @@ from .models import Service, Cart, CartItem, Order, OrderItem, Review
 from .serializers import ServiceSerializer, CartSerializer, CartItemSerializer, OrderSerializer, ReviewSerializer
 from .permissions import IsAdminUserCustom 
 from rest_framework import permissions
-
+from rest_framework import filters
+from service.permissions import IsOwnerOrReadOnly
 class ServiceViewSet(viewsets.ModelViewSet):
     queryset = Service.objects.all().order_by('-id')
     serializer_class = ServiceSerializer
-    # allow only admins to create/update/destroy
-    def get_permissions(self):
-        if self.action in ('create','update','partial_update','destroy'):
-            return [IsAuthenticated(), IsAdminUserCustom()]
-        return [permissions.AllowAny()]
+    permission_classes = IsOwnerOrReadOnly
 
     # allow sorting by rating: ?ordering=-average_rating
-    from rest_framework import filters
+
     filter_backends = [filters.OrderingFilter, filters.SearchFilter]
     ordering_fields = ['average_rating','price','created_at']
     search_fields = ['title','description']
