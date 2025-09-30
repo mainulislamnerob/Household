@@ -193,15 +193,15 @@ def payment_success(request):
     order = Order.objects.get(id=order_id)
     order.status = "CONFIRMED"
     order.save()
-    return HttpResponseRedirect(f"{main_settings.FRONTEND_URL}/dashboard/orders/")
+    return HttpResponseRedirect(f"{main_settings.FRONTEND_URL}/dashboard/ordered/")
 
 
 @api_view(['POST'])
 def payment_cancel(request):
-    return HttpResponseRedirect(f"{main_settings.FRONTEND_URL}/dashboard/orders/")
+    return HttpResponseRedirect(f"{main_settings.FRONTEND_URL}/dashboard/ordered/")
 
 
 @api_view(['POST'])
 def payment_fail(request):
     print("Inside fail")
-    return HttpResponseRedirect(f"{main_settings.FRONTEND_URL}/dashboard/orders/")
+    return HttpResponseRedirect(f"{main_settings.FRONTEND_URL}/dashboard/ordered/")
