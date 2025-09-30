@@ -29,25 +29,24 @@ class Cart(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 class CartItem(models.Model):
-    cart = models.ForeignKey('Cart', related_name='items', on_delete=models.CASCADE)
-    service = models.ForeignKey('Service', related_name='cart_items', on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, related_name='items', on_delete=models.CASCADE)
+    service = models.ForeignKey(Service, related_name='cart_items', on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     added_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['cart', 'service'], name='uniq_cart_service')
-        ]
+        unique_together = ('cart', 'service')
 
-ORDER_STATUS = (
+
+
+class Order(models.Model):
+    ORDER_STATUS = (
     ('PENDING', 'Pending'),
     ('CONFIRMED', 'Confirmed'),
     ('IN_PROGRESS', 'In Progress'),
     ('COMPLETED', 'Completed'),
     ('CANCELLED', 'Cancelled'),
-)
-
-class Order(models.Model):
+    )
     user = models.ForeignKey(User,related_name='orders', on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=ORDER_STATUS, default='PENDING')
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, default='unpaid')

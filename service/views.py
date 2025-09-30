@@ -8,7 +8,7 @@ from .models import Service, Cart, CartItem, Order, OrderItem, Review
 from .serializers import ServiceSerializer, CartSerializer, CartItemSerializer, OrderSerializer, ReviewSerializer
 from rest_framework import filters
 from rest_framework import permissions
-
+from rest_framework import serializers
 from decimal import Decimal
 from django.db import transaction
 from django.db.models import F
@@ -82,7 +82,39 @@ class CartItemViewSet(viewsets.ModelViewSet):
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+class OrderViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = OrderSerializer
+    queryset = Order.objects.all().order_by('-created_at')
 
+    def get_queryset(self):
+        # Users can only see their own orders
+        return Order.objects.filter(user=self.request.user).prefetch_related('items')
+
+    def perform_create(self, serializer):
+        with transaction.atomic():
+            cart = get_object_or_404(Cart, user=self.request.user)
+            cart_items = CartItem.objects.select_related('service').filter(cart=cart)
+            if not cart_items.exists():
+                raise serializers.ValidationError("Cart is empty")
+
+            total_amount = sum(item.service.price * item.quantity for item in cart_items)
+
+            order = serializer.save(user=self.request.user, total_amount=total_amount)
+
+            order_items = [
+                OrderItem(
+                    order=order,
+                    service_title=item.service.title,
+                    service=item.service,
+                    unit_price=item.service.price,
+                    quantity=item.quantity
+                ) for item in cart_items
+            ]
+            OrderItem.objects.bulk_create(order_items)
+
+            # Clear the cart
+            cart_items.delete()
 
 class ReviewViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]

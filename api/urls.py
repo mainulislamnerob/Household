@@ -4,13 +4,14 @@ from rest_framework.routers import DefaultRouter
 
 from service.views import (
     ServiceViewSet, ReviewViewSet, CartItemViewSet,
-    CartMeView, CartDetailView
+    CartMeView, CartDetailView,OrderViewSet
 )
 from users.views import TeamViewSet, ContactMessageViewSet
 from shop.views import ProductViewSet
 
 router = DefaultRouter()
 router.register(r"services", ServiceViewSet, basename="service")
+router.register(r"orders", OrderViewSet, basename="order")
 router.register(r"reviews", ReviewViewSet, basename="review")
 router.register(r"teams", TeamViewSet, basename="team")
 router.register(r"contact-messages", ContactMessageViewSet, basename="contactmessage")
