@@ -192,3 +192,6 @@ SWAGGER_SETTINGS = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
 ]
+
+FRONTEND_URL=config('FRONTEND_URL', default='http://localhost:5173')
+BACKEND_URL=config('BACKEND_URL', default='http://localhost:8000')

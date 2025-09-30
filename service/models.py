@@ -1,5 +1,6 @@
 from django.db import models
 from users.models import User
+from decimal import Decimal
 # Create your models here.
 class Service(models.Model):
     title = models.CharField(max_length=200)
@@ -41,26 +42,36 @@ class CartItem(models.Model):
 
 class Order(models.Model):
     ORDER_STATUS = (
-    ('PENDING', 'Pending'),
-    ('CONFIRMED', 'Confirmed'),
-    ('IN_PROGRESS', 'In Progress'),
-    ('COMPLETED', 'Completed'),
-    ('CANCELLED', 'Cancelled'),
+        ('PENDING', 'Pending'),
+        ('CONFIRMED', 'Confirmed'),
+        ('IN_PROGRESS', 'In Progress'),
+        ('COMPLETED', 'Completed'),
+        ('CANCELLED', 'Cancelled'),
     )
-    user = models.ForeignKey(User,related_name='orders', on_delete=models.CASCADE)
+
+    user = models.ForeignKey(User, related_name='orders', on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=ORDER_STATUS, default='PENDING')
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default='unpaid')
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2,
+                                       default=Decimal('0.00'))   # was "unpaid" ❌
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    payment_status = models.CharField(max_length=32, default='unpaid')
+
+    PAYMENT_STATUS = (                              # optional but recommended
+        ('UNPAID', 'unpaid'),
+        ('PAID', 'paid'),
+        ('REFUNDED', 'refunded'),
+        ('FAILED', 'failed'),
+    )
+    payment_status = models.CharField(max_length=32, default='UNPAID', choices=PAYMENT_STATUS)
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order,related_name='items', on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
     service_title = models.CharField(max_length=200)
-    service = models.ForeignKey(Service,null=True, on_delete=models.SET_NULL)
+    service = models.ForeignKey(Service, null=True, on_delete=models.SET_NULL)
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField(default=1)
     subtotal = models.DecimalField(max_digits=12, decimal_places=2)
+
 
 class PaymentIntent(models.Model):
     order = models.OneToOneField(Order, related_name='paymnet_intent', on_delete=models.CASCADE)
