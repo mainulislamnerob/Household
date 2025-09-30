@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Service, CartItem, Cart, Order, OrderItem, Review
-
+from rest_framework import serializers
+from .models import Cart
 class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
@@ -13,12 +14,19 @@ class CartItemSerializer(serializers.ModelSerializer):
         model = CartItem
         fields = ('id','service','service_id','quantity','added_at')
 
+
+
 class CartSerializer(serializers.ModelSerializer):
-    items = CartItemSerializer(many=True, read_only=True)
     class Meta:
         model = Cart
-        fields = ('id','user','items','created_at')
-        read_only_fields = ('user',)
+        fields = ['id', 'user', 'created_at']  # adjust as needed
+        read_only_fields = ['id', 'user', 'created_at']
+
+    def create(self, validated_data):
+        # Defensive: make sure the request user is set, not taken from client input
+        request = self.context.get('request')
+        return Cart.objects.get_or_create(user=request.user)[0]
+
 
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:

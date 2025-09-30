@@ -29,13 +29,15 @@ class Cart(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, related_name='items', on_delete=models.CASCADE)
-    service = models.ForeignKey(Service, related_name='cart_items', on_delete=models.CASCADE)
+    cart = models.ForeignKey('Cart', related_name='items', on_delete=models.CASCADE)
+    service = models.ForeignKey('Service', related_name='cart_items', on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     added_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('cart', 'service')
+        constraints = [
+            models.UniqueConstraint(fields=['cart', 'service'], name='uniq_cart_service')
+        ]
 
 ORDER_STATUS = (
     ('PENDING', 'Pending'),
