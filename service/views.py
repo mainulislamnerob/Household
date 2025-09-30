@@ -19,10 +19,12 @@ from django.conf import settings as main_settings
 class ServiceViewSet(viewsets.ModelViewSet):
     queryset = Service.objects.all().order_by('-id')
     serializer_class = ServiceSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]  # Read-only for unauthenticated users
     # allow sorting by rating: ?ordering=-average_rating
     filter_backends = [filters.OrderingFilter, filters.SearchFilter]
     ordering_fields = ['average_rating','price','created_at']
     search_fields = ['title','description']
+
 
 class CartMeView(generics.GenericAPIView):
     """
