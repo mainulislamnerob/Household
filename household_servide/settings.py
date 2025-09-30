@@ -191,6 +191,7 @@ SWAGGER_SETTINGS = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "https://household-service-providing-platfor-nine.vercel.app"
 ]
 
 FRONTEND_URL=config('FRONTEND_URL', default='http://localhost:5173')
